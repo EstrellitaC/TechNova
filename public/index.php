@@ -22,7 +22,7 @@ $productos = $stmt->fetchAll();
 <div class="row">
 <?php foreach($productos as $p): ?>
   <div class="col-md-3">
-    <div class="card mb-3">
+    <div class="card">
       <?php if (!empty($p['imagen'])): ?>
       <img src="../uploads/<?= htmlspecialchars($p['imagen']) ?>" class="img-fluid" alt="producto">
         <?php else: ?>
@@ -32,7 +32,7 @@ $productos = $stmt->fetchAll();
         <h5 class="card-title"><?=htmlspecialchars($p['nombre'])?></h5>
         <p class="card-text small"><?=htmlspecialchars(substr($p['descripcion'],0,80))?>...</p>
         <p class="fw-bold">S/ <?=number_format($p['precio'],2)?></p>
-        <a href="product.php?id=<?=$p['id']?>" class="btn btn-sm btn-primary">Ver</a>
+        <a href="product.php?id=<?=$p['id']?>" class="btn">Ver producto</a>
       </div>
     </div>
   </div>

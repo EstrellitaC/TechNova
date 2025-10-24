@@ -9,15 +9,15 @@ $stmt->execute([$id]);
 $p = $stmt->fetch();
 if(!$p){ echo "<div class='alert alert-warning'>Producto no encontrado.</div>"; include __DIR__ . '/../includes/footer.php'; exit; }
 ?>
-<div class="row">
-  <div class="col-md-5">
-      <?php if (!empty($p['imagen'])): ?>
-      <img src="../uploads/<?= htmlspecialchars($p['imagen']) ?>" class="img-fluid" alt="producto">
+<div class="rowpdt">
+  <div class="imagen">
+    <?php if (!empty($p['imagen'])): ?>
+      <img src="../uploads/<?= htmlspecialchars($p['imagen']) ?>" alt="producto">
         <?php else: ?>
           <span class="text-muted">Sin imagen</span>
-        <?php endif; ?>
+      <?php endif; ?>
   </div>
-  <div class="col-md-7">
+  <div class="infopdt">
     <h3><?=htmlspecialchars($p['nombre'])?></h3>
     <p><?=nl2br(htmlspecialchars($p['descripcion']))?></p>
     <p class="fs-4">S/ <?=number_format($p['precio'],2)?></p>

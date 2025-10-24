@@ -1,0 +1,67 @@
+body{
+    background:#ffffff;
+} 
+
+/* Navbar */
+
+nav{
+    background-color: #000;
+}
+
+nav .container li a, .navbar-brand{
+    color: #ffffff;
+}
+nav .container li a:hover{
+    color: #ffffff;
+}
+
+.navbar-brand:hover{
+    color: #ffffff;
+}
+.navbar-nav{
+    display: flex;
+    align-items: center;
+}
+
+/* index */
+
+.card{
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.btn{
+    color: #ffffff;
+    text-decoration: none;
+    width: max-content;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+    border: none;
+}
+.btn:hover{
+    background-color: rgb(202, 202, 202);
+    color: #000;
+}
+
+/* carrito */
+
+.rowpdt{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 20px;
+}
+
+.rowpdt .imagen img{
+    width: 600px;
+    height: 500px;
+    object-fit: cover; 
+}
+
+/* carrito */
+
+.alert{
+    background-color: #e4e4e4;
+    border: none;
+    color: #000;
+}

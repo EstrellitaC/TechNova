@@ -79,26 +79,22 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
 <div class="row">
   <div class="col-md-5">
     <div class="card card-body">
-      <h5>Nuevo producto</h5>
+      <h5 class="mb-4">Nuevo producto</h5>
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="create" value="1">
-        <div class="mb-2">
+        <div class="mb-4">
           <input class="form-control" name="nombre" placeholder="Nombre" required>
         </div>
-        <div class="mb-2">
+        <div class="mb-4">
           <textarea class="form-control" name="descripcion" placeholder="Descripción"></textarea>
         </div>
-
-        <div class="mb-2">
+        <div class="mb-4">
           <input type="number" step="0.01" class="form-control" name="precio" placeholder="Precio" required>
         </div>
-
-        <div class="mb-2">
+        <div class="mb-4">
           <input type="number" class="form-control" name="stock" placeholder="Stock" required>
         </div>
-
-        <div class="mb-2">
-          <label>Imagen del producto</label>
+        <div class="mb-4">
           <input type="file" class="form-control" name="imagen" accept="image/*">
         </div>
 
@@ -113,10 +109,10 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
         <tr>
           <th>ID</th>
           <th>Imagen</th>
-          <th>Nombre</th>
+          <th>Producto</th>
           <th>Precio</th>
           <th>Stock</th>
-          <th></th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -138,7 +134,6 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
               <a class="btn btn-sm btn-danger" href="products.php?del=<?= $p['id'] ?>" onclick="return confirm('¿Eliminar producto?')">Eliminar</a>
             </td>
           </tr>
-
           <!-- Modal de edición -->
           <div class="modal fade" id="edit<?= $p['id'] ?>" tabindex="-1">
             <div class="modal-dialog">
@@ -151,20 +146,19 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
                   <div class="modal-body">
                     <input type="hidden" name="update" value="1">
                     <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                    <div class="mb-2">
+                    <div class="mb-4">
                       <input class="form-control" name="nombre" value="<?= htmlspecialchars($p['nombre']) ?>">
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-4">
                       <textarea class="form-control" name="descripcion"><?= htmlspecialchars($p['descripcion']) ?></textarea>
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-4">
                       <input type="number" step="0.01" class="form-control" name="precio" value="<?= $p['precio'] ?>">
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-4">
                       <input type="number" class="form-control" name="stock" value="<?= $p['stock'] ?>">
                     </div>
-                    <div class="mb-2">
-                      <label>Nueva imagen</label>
+                    <div class="mb-4">
                       <input type="file" class="form-control" name="imagen" accept="image/*">
                     </div>
                   </div>
