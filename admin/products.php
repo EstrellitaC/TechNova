@@ -26,10 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Crear nuevo producto
     if (isset($_POST['create'])) {
-        $stmt = $pdo->prepare("INSERT INTO productos(nombre, descripcion, precio, stock, imagen) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO productos(nombre, descripcion, categoria, precio, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $_POST['nombre'],
             $_POST['descripcion'],
+            $_POST['categoria'],
             $_POST['precio'],
             $_POST['stock'],
             $imagen_nombre
@@ -42,20 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Si subió una nueva imagen, actualizamos la ruta también
         if ($imagen_nombre) {
-            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen=? WHERE id=?");
+            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, precio=?, stock=?, imagen=? WHERE id=?");
             $stmt->execute([
                 $_POST['nombre'],
                 $_POST['descripcion'],
+                $_POST['categoria'],
                 $_POST['precio'],
                 $_POST['stock'],
                 $imagen_nombre,
                 $id
             ]);
         } else {
-            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=? WHERE id=?");
+            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, precio=?, stock=? WHERE id=?");
             $stmt->execute([
                 $_POST['nombre'],
                 $_POST['descripcion'],
+                $_POST['categoria'],
                 $_POST['precio'],
                 $_POST['stock'],
                 $id
@@ -89,6 +92,9 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
           <textarea class="form-control" name="descripcion" placeholder="Descripción"></textarea>
         </div>
         <div class="mb-4">
+          <input class="form-control" name="categoria" placeholder="Categoria" required>
+        </div>
+        <div class="mb-4">
           <input type="number" step="0.01" class="form-control" name="precio" placeholder="Precio" required>
         </div>
         <div class="mb-4">
@@ -110,6 +116,7 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
           <th>ID</th>
           <th>Imagen</th>
           <th>Producto</th>
+          <th>Categoria</th>
           <th>Precio</th>
           <th>Stock</th>
           <th>Acciones</th>
@@ -127,6 +134,7 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
               <?php endif; ?>
             </td>
             <td><?= htmlspecialchars($p['nombre']) ?></td>
+            <td><?=htmlspecialchars($p['categoria'])?></td>
             <td>S/ <?= number_format($p['precio'], 2) ?></td>
             <td><?= $p['stock'] ?></td>
             <td>
@@ -151,6 +159,9 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
                     </div>
                     <div class="mb-4">
                       <textarea class="form-control" name="descripcion"><?= htmlspecialchars($p['descripcion']) ?></textarea>
+                    </div>
+                    <div class="mb-4">
+                      <input class="form-control" name="categoria" value="<?= htmlspecialchars($p['categoria']) ?>">
                     </div>
                     <div class="mb-4">
                       <input type="number" step="0.01" class="form-control" name="precio" value="<?= $p['precio'] ?>">
