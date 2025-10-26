@@ -14,7 +14,6 @@ if(!$p){
     exit;
 }
 
-// 🔹 Obtener productos relacionados (misma categoría, distinto ID)
 $rel = $pdo->prepare("SELECT id, nombre, precio, imagen FROM productos WHERE categoria = ? AND id != ? LIMIT 4");
 $rel->execute([$p['categoria'], $p['id']]);
 $relacionados = $rel->fetchAll();
@@ -60,7 +59,7 @@ $relacionados = $rel->fetchAll();
           <div class="card-body">
             <h6 class="card-title"><?= htmlspecialchars($r['nombre']) ?></h6>
             <p class="text-primary fw-bold mb-2">S/ <?= number_format($r['precio'],2) ?></p>
-            <a href="producto.php?id=<?= $r['id'] ?>" class="btn btn-outline-primary btn-sm">Ver más</a>
+            <a href="product.php?id=<?= $r['id'] ?>" class="btn btn-outline-primary btn-sm">Ver producto</a>
           </div>
         </div>
       </div>
