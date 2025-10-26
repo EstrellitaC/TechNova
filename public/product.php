@@ -27,12 +27,10 @@ $relacionados = $rel->fetchAll();
       <span class="text-muted">Sin imagen</span>
     <?php endif; ?>
   </div>
-
   <div class="infopdt">
     <h3><?= htmlspecialchars($p['nombre']) ?></h3>
     <p><?= nl2br(htmlspecialchars($p['descripcion'])) ?></p>
-    <p class="fs-4 text-success">S/ <?= number_format($p['precio'],2) ?></p>
-
+    <p class="fs-4">S/ <?= number_format($p['precio'],2) ?></p>
     <form method="post" action="add_to_cart.php">
       <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
       <div class="input-group mb-3" style="max-width:220px;">
@@ -47,19 +45,19 @@ $relacionados = $rel->fetchAll();
 <?php if($relacionados): ?>
   <hr>
   <h4 class="text-center mt-4 mb-4">Productos relacionados</h4>
-  <div class="row justify-content-center">
+  <div class="row">
     <?php foreach($relacionados as $r): ?>
-      <div class="col-md-3 col-6 mb-4 text-center">
-        <div class="card h-100 shadow-sm">
+      <div class="col-md-3 col-6 mb-4">
+        <div class="card">
           <?php if (!empty($r['imagen'])): ?>
             <img src="../uploads/<?= htmlspecialchars($r['imagen']) ?>" class="card-img-top" alt="<?= htmlspecialchars($r['nombre']) ?>" style="height:180px; object-fit:cover;">
           <?php else: ?>
-            <div class="text-muted" style="height:180px; display:flex; align-items:center; justify-content:center;">Sin imagen</div>
+            <div class="text-muted">Sin imagen</div>
           <?php endif; ?>
           <div class="card-body">
             <h6 class="card-title"><?= htmlspecialchars($r['nombre']) ?></h6>
-            <p class="text-primary fw-bold mb-2">S/ <?= number_format($r['precio'],2) ?></p>
-            <a href="product.php?id=<?= $r['id'] ?>" class="btn btn-outline-primary btn-sm">Ver producto</a>
+            <p class="fw-bold">S/ <?= number_format($r['precio'],2) ?></p>
+            <a href="product.php?id=<?= $r['id'] ?>" class="btn">Ver producto</a>
           </div>
         </div>
       </div>
