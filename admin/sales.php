@@ -2,25 +2,25 @@
 require_once __DIR__ . '/../lib/admin_guard.php';
 require_once __DIR__ . '/../config/db.php';
 include __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../controladores/ventasController.php';
 
-// Obtener ventas con usuario
-$ventas = $pdo->query("
-  SELECT v.*, u.nombre AS cliente 
-  FROM ventas v 
-  JOIN usuarios u ON u.id = v.id_usuario 
-  ORDER BY v.id DESC
-")->fetchAll();
+// Instanciar controller
+$controller = new VentaController($pdo);
+
+// Obtener todas las ventas
+$ventas = $controller->handleRequest();
 ?>
 
 <h3>Ventas</h3>
 <table class="table table-striped">
-  <thead>
+  <thead class="table-dark">
     <tr>
       <th>ID</th>
       <th>Cliente</th>
       <th>Fecha</th>
       <th>Total</th>
       <th>Detalles</th>
+      <th>Acción</th>
     </tr>
   </thead>
   <tbody>
@@ -31,9 +31,12 @@ $ventas = $pdo->query("
       <td><?= $v['fecha'] ?></td>
       <td>S/ <?= number_format($v['total'], 2) ?></td>
       <td>
-        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detalleModal<?= $v['id'] ?>">
+        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#detalleModal<?= $v['id'] ?>">
           Ver detalles
         </button>
+      </td>
+      <td>
+        <a href="sales.php?del=<?= $v['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta venta?')">Eliminar</a>
       </td>
     </tr>
   <?php endforeach; ?>
@@ -41,16 +44,9 @@ $ventas = $pdo->query("
 </table>
 
 <?php
-// Crear un modal para cada venta
+// Crear modales para cada venta
 foreach($ventas as $v):
-  $stmt = $pdo->prepare("
-    SELECT p.nombre, dv.cantidad, dv.precio, (dv.cantidad * dv.precio) AS subtotal
-    FROM detalle_venta dv
-    JOIN productos p ON p.id = dv.id_producto
-    WHERE dv.id_venta = ?
-  ");
-  $stmt->execute([$v['id']]);
-  $productos = $stmt->fetchAll();
+  $detalle = $controller->verDetalle($v['id']);
 ?>
 <div class="modal fade" id="detalleModal<?= $v['id'] ?>" tabindex="-1">
   <div class="modal-dialog modal-lg">
@@ -60,22 +56,20 @@ foreach($ventas as $v):
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <?php if ($productos): ?>
+        <?php if (!empty($detalle['detalles'])): ?>
         <table class="table table-sm">
           <thead>
             <tr>
               <th>Producto</th>
               <th>Cantidad</th>
-              <th>Precio</th>
               <th>Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach($productos as $p): ?>
+            <?php foreach($detalle['detalles'] as $p): ?>
             <tr>
               <td><?= htmlspecialchars($p['nombre']) ?></td>
               <td><?= $p['cantidad'] ?></td>
-              <td>S/ <?= number_format($p['precio'], 2) ?></td>
               <td>S/ <?= number_format($p['subtotal'], 2) ?></td>
             </tr>
             <?php endforeach; ?>

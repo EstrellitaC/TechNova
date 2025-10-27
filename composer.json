@@ -1,0 +1,10 @@
+{
+    "name": "technova/ventas",
+    "description": "sistemas de ventas",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "phpoffice/phpspreadsheet": "1.28"
+    }
+}

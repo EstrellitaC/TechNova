@@ -1,128 +1,44 @@
 <?php
 require_once __DIR__ . '/../lib/admin_guard.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../controladores/productoController.php';
 include __DIR__ . '/../includes/header.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Crear o actualizar productos
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // 📦 SUBIR IMAGEN (si existe)
-    $imagen_nombre = null;
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-        $imagen_nombre = uniqid('prod_') . '.' . $ext; // nombre único
-        $ruta_destino = __DIR__ . '/../uploads/' . $imagen_nombre;
-
-        // Crea la carpeta /uploads si no existe
-        if (!file_exists(__DIR__ . '/../uploads')) {
-            mkdir(__DIR__ . '/../uploads', 0777, true);
-        }
-
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_destino);
-    }
-
-    // Crear nuevo producto
-    if (isset($_POST['create'])) {
-        $stmt = $pdo->prepare("INSERT INTO productos(nombre, descripcion, categoria, precio, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([
-            $_POST['nombre'],
-            $_POST['descripcion'],
-            $_POST['categoria'],
-            $_POST['precio'],
-            $_POST['stock'],
-            $imagen_nombre
-        ]);
-    }
-
-    // Actualizar producto
-    elseif (isset($_POST['update'])) {
-        $id = $_POST['id'];
-
-        // Si subió una nueva imagen, actualizamos la ruta también
-        if ($imagen_nombre) {
-            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, precio=?, stock=?, imagen=? WHERE id=?");
-            $stmt->execute([
-                $_POST['nombre'],
-                $_POST['descripcion'],
-                $_POST['categoria'],
-                $_POST['precio'],
-                $_POST['stock'],
-                $imagen_nombre,
-                $id
-            ]);
-        } else {
-            $stmt = $pdo->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, precio=?, stock=? WHERE id=?");
-            $stmt->execute([
-                $_POST['nombre'],
-                $_POST['descripcion'],
-                $_POST['categoria'],
-                $_POST['precio'],
-                $_POST['stock'],
-                $id
-            ]);
-        }
-    }
-}
-
-// Eliminar producto
-if (isset($_GET['del'])) {
-    $pdo->prepare("DELETE FROM productos WHERE id=?")->execute([intval($_GET['del'])]);
-    header("Location: products.php");
-    exit;
-}
-
-// Obtener productos
-$prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
+$controller = new ProductoController($pdo);
+$prods = $controller->handleRequest();
 ?>
 
-<h3>Productos</h3>
-<div class="row">
-  <div class="col-md-5">
-    <div class="card card-body">
-      <h5 class="mb-4">Nuevo producto</h5>
-      <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="create" value="1">
-        <div class="mb-4">
-          <input class="form-control" name="nombre" placeholder="Nombre" required>
-        </div>
-        <div class="mb-4">
-          <textarea class="form-control" name="descripcion" placeholder="Descripción"></textarea>
-        </div>
-        <div class="mb-4">
-          <input class="form-control" name="categoria" placeholder="Categoria" required>
-        </div>
-        <div class="mb-4">
-          <input type="number" step="0.01" class="form-control" name="precio" placeholder="Precio" required>
-        </div>
-        <div class="mb-4">
-          <input type="number" class="form-control" name="stock" placeholder="Stock" required>
-        </div>
-        <div class="mb-4">
-          <input type="file" class="form-control" name="imagen" accept="image/*">
-        </div>
+<h3 class="mb-4">Gestión de Productos</h3>
 
-        <button class="btn btn-primary">Guardar</button>
-      </form>
-    </div>
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <!-- Buscador -->
+  <form class="d-flex" method="get" style="max-width: 300px;">
+    <input type="text" class="form-control me-2" name="q" placeholder="Buscar producto..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+    <button class="btn btn-outline-primary">Buscar</button>
+  </form>
 
-  <div class="col-md-7">
-    <table class="table table-striped align-middle">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Imagen</th>
-          <th>Producto</th>
-          <th>Categoria</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
+  <!--Botón para agregar -->
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+    <i class="bi bi-plus-lg"></i> Nuevo Producto
+  </button>
+</div>
+
+<!--Tabla de productos -->
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Imagen</th>
+        <th>Producto</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (!empty($prods)): ?>
         <?php foreach ($prods as $p): ?>
           <tr>
             <td><?= $p['id'] ?></td>
@@ -134,7 +50,7 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
               <?php endif; ?>
             </td>
             <td><?= htmlspecialchars($p['nombre']) ?></td>
-            <td><?=htmlspecialchars($p['categoria'])?></td>
+            <td><?= htmlspecialchars($p['categoria']) ?></td>
             <td>S/ <?= number_format($p['precio'], 2) ?></td>
             <td><?= $p['stock'] ?></td>
             <td>
@@ -142,6 +58,7 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
               <a class="btn btn-sm btn-danger" href="products.php?del=<?= $p['id'] ?>" onclick="return confirm('¿Eliminar producto?')">Eliminar</a>
             </td>
           </tr>
+
           <!-- Modal de edición -->
           <div class="modal fade" id="edit<?= $p['id'] ?>" tabindex="-1">
             <div class="modal-dialog">
@@ -154,35 +71,87 @@ $prods = $pdo->query("SELECT * FROM productos ORDER BY id DESC")->fetchAll();
                   <div class="modal-body">
                     <input type="hidden" name="update" value="1">
                     <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Nombre</label>
                       <input class="form-control" name="nombre" value="<?= htmlspecialchars($p['nombre']) ?>">
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Descripción</label>
                       <textarea class="form-control" name="descripcion"><?= htmlspecialchars($p['descripcion']) ?></textarea>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Categoría</label>
                       <input class="form-control" name="categoria" value="<?= htmlspecialchars($p['categoria']) ?>">
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Precio</label>
                       <input type="number" step="0.01" class="form-control" name="precio" value="<?= $p['precio'] ?>">
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Stock</label>
                       <input type="number" class="form-control" name="stock" value="<?= $p['stock'] ?>">
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Imagen</label>
                       <input type="file" class="form-control" name="imagen" accept="image/*">
                     </div>
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-primary">Guardar</button>
+                    <button class="btn btn-primary">Guardar cambios</button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
         <?php endforeach; ?>
-      </tbody>
-    </table>
+      <?php else: ?>
+        <tr><td colspan="7" class="text-center text-muted">No hay productos</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para agregar producto -->
+<div class="modal fade" id="modalAgregar" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar nuevo producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="create" value="1">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input class="form-control" name="nombre" placeholder="Nombre del producto" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion" placeholder="Descripción"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Categoría</label>
+            <input class="form-control" name="categoria" placeholder="Categoría" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Precio</label>
+            <input type="number" step="0.01" class="form-control" name="precio" placeholder="Precio" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input type="number" class="form-control" name="stock" placeholder="Stock" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            <input type="file" class="form-control" name="imagen" accept="image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success">Guardar</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
