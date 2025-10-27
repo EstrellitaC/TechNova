@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '../../config/config.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../lib/auth.php';
 include __DIR__ . '/../includes/header.php';
@@ -23,7 +23,7 @@ $total = 0;
       <td>S/ <?=number_format($it['precio'],2)?></td>
       <td><?=$it['cantidad']?></td>
       <td>S/ <?=number_format($sub,2)?></td>
-      <td><a class="btn btn-sm btn-outline-danger" href="remove_from_cart.php?id=<?=$it['iditem']?>">Quitar</a></td>
+      <td><a class="btn btn-sm btn-danger" href="remove_from_cart.php?id=<?=$it['iditem']?>">Quitar</a></td>
     </tr>
   <?php endforeach; ?>
   </tbody>

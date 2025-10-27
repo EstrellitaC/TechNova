@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../lib/dao_ventas.php';
+require_once __DIR__ . '/../lib/models/dao_ventas.php';
 
 class VentaController {
     private $dao;

@@ -11,19 +11,14 @@ $prods = $controller->handleRequest();
 <h3 class="mb-4">Gestión de Productos</h3>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <!-- Buscador -->
   <form class="d-flex" method="get" style="max-width: 300px;">
     <input type="text" class="form-control me-2" name="q" placeholder="Buscar producto..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
     <button class="btn btn-outline-primary">Buscar</button>
   </form>
-
-  <!--Botón para agregar -->
   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
     <i class="bi bi-plus-lg"></i> Nuevo Producto
   </button>
 </div>
-
-<!--Tabla de productos -->
 <div class="table-responsive">
   <table class="table table-striped align-middle">
     <thead class="table-dark">
@@ -58,8 +53,6 @@ $prods = $controller->handleRequest();
               <a class="btn btn-sm btn-danger" href="products.php?del=<?= $p['id'] ?>" onclick="return confirm('¿Eliminar producto?')">Eliminar</a>
             </td>
           </tr>
-
-          <!-- Modal de edición -->
           <div class="modal fade" id="edit<?= $p['id'] ?>" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -110,8 +103,6 @@ $prods = $controller->handleRequest();
     </tbody>
   </table>
 </div>
-
-<!-- Modal para agregar producto -->
 <div class="modal fade" id="modalAgregar" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
