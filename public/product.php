@@ -5,7 +5,6 @@ include __DIR__ . '/../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
 
-// 🧩 Buscar producto principal
 $stmt = $pdo->prepare("SELECT * FROM productos WHERE id = ?");
 $stmt->execute([$id]);
 $p = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -16,7 +15,6 @@ if (!$p) {
     exit;
 }
 
-// 🔄 Productos relacionados (misma categoría)
 $rel = $pdo->prepare("SELECT id, nombre, precio, imagen FROM productos WHERE categoria = ? AND id != ? LIMIT 4");
 $rel->execute([$p['categoria'], $p['id']]);
 $relacionados = $rel->fetchAll(PDO::FETCH_ASSOC);
@@ -24,7 +22,6 @@ $relacionados = $rel->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container py-5">
   <div class="row align-items-center">
-    <!-- 🖼 Imagen del producto -->
     <div class="col-md-5 text-center">
       <?php if (!empty($p['imagen'])): ?>
         <img src="../uploads/<?= htmlspecialchars($p['imagen']) ?>" alt="<?= htmlspecialchars($p['nombre']) ?>" class="img-fluid rounded shadow-sm" style="max-height:400px; object-fit:cover;">
@@ -32,14 +29,12 @@ $relacionados = $rel->fetchAll(PDO::FETCH_ASSOC);
         <div class="text-muted">Sin imagen disponible</div>
       <?php endif; ?>
     </div>
-
-    <!--Información del producto -->
+    
     <div class="col-md-7">
       <h2 class="fw-bold mb-3"><?= htmlspecialchars($p['nombre']) ?></h2>
       <p class="text-muted"><?= nl2br(htmlspecialchars($p['descripcion'])) ?></p>
       <h4 class="mb-4">S/ <?= number_format($p['precio'], 2) ?></h4>
 
-      <!--Formulario para añadir al carrito -->
       <form method="post" action="add_to_cart.php" class="d-flex align-items-center gap-2">
         <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
         <div>
@@ -53,7 +48,6 @@ $relacionados = $rel->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 
-  <!--Productos relacionados -->
   <?php if ($relacionados): ?>
     <hr class="my-5">
     <h4 class="text-center mb-4">Productos relacionados</h4>

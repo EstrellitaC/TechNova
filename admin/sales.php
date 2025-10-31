@@ -4,10 +4,8 @@ require_once __DIR__ . '/../config/db.php';
 include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../controladores/ventasController.php';
 
-// Instanciar controller
 $controller = new VentaController($pdo);
 
-// Obtener todas las ventas
 $ventas = $controller->handleRequest();
 ?>
 
@@ -42,9 +40,8 @@ $ventas = $controller->handleRequest();
   <?php endforeach; ?>
   </tbody>
 </table>
-
 <?php
-// Crear modales para cada venta
+
 foreach($ventas as $v):
   $detalle = $controller->verDetalle($v['id']);
 ?>

@@ -4,31 +4,33 @@ require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../controladores/usuarioController.php';
 include __DIR__ . '/../includes/header.php';
 
+//Nuevo objeto
 $controller = new UsuarioController($pdo);
+
+//Significa que se agarra todos los usuarios
 $usuarios = $controller->handleRequest();
 
+// Esto permite la busqueda de usuarios por nombre o correo
 $busqueda = $_GET['q'] ?? '';
 if ($busqueda) {
   $usuarios = array_filter($usuarios, fn($u) => stripos($u['nombre'], $busqueda) !== false || stripos($u['correo'], $busqueda) !== false);
 }
 ?>
 
-<h3 class="mb-4">Clientes / Usuarios</h3>
+<h3 class="mb-4">Usuarios</h3>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <!-- Buscador -->
+
   <form method="get" class="d-flex mb-4" style="gap: 10px; max-width: 400px;">
-    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o correo..." value="<?= htmlspecialchars($busqueda) ?>">
+    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre / correo" value="<?= htmlspecialchars($busqueda) ?>">
     <button class="btn btn-primary">Buscar</button>
   </form>
 
-  <!-- Botón para abrir modal de agregar -->
   <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#nuevoUsuario">
     <i class="bi bi-person-plus"></i> Nuevo usuario
   </button>
 </div>
 
-<!-- Tabla de usuarios -->
 <table class="table table-striped align-middle">
   <thead class="table-dark">
     <tr>
@@ -48,11 +50,10 @@ if ($busqueda) {
         <td><?= htmlspecialchars($u['rol']) ?></td>
         <td>
           <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#edit<?= $u['id'] ?>">Editar</button>
-          <a class="btn btn-sm btn-danger" href="users.php?del=<?= $u['id'] ?>" onclick="return confirm('¿Eliminar usuario?')">Eliminar</a>
+          <a class="btn btn-sm btn-danger" href="clients.php?del=<?= $u['id'] ?>" onclick="return confirm('¿Eliminar usuario?')">Eliminar</a>
         </td>
       </tr>
 
-      <!-- Modal editar -->
       <div class="modal fade" id="edit<?= $u['id'] ?>" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -96,7 +97,6 @@ if ($busqueda) {
   </tbody>
 </table>
 
-<!-- Modal agregar nuevo -->
 <div class="modal fade" id="nuevoUsuario" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">

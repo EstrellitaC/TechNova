@@ -8,3 +8,7 @@ $uid = $_SESSION['user']['id'];
 $pdo->prepare("DELETE FROM cart_items WHERE id=? AND id_usuario=?")->execute([$id,$uid]);
 redirect('cart.php');
 ?>
+
+
+
+

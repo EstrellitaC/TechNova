@@ -58,11 +58,6 @@ class ProductoDAO {
         }
     }
 
-    public function eliminarProducto($id) {
-        $stmt = $this->pdo->prepare("DELETE FROM productos WHERE id=?");
-        $stmt->execute([$id]);
-    }
-
     private function subirImagen($imagen) {
         if (!isset($imagen) || $imagen['error'] !== UPLOAD_ERR_OK) {
             return null;
@@ -70,10 +65,13 @@ class ProductoDAO {
 
         $ext = pathinfo($imagen['name'], PATHINFO_EXTENSION);
         $nombre = uniqid('prod_') . '.' . $ext;
-        $ruta = __DIR__ . '/../uploads/' . $nombre;
 
-        if (!file_exists(__DIR__ . '/../uploads')) {
-            mkdir(__DIR__ . '/../uploads', 0777, true);
+        // ✅ Guardar directamente en la carpeta raíz del proyecto
+        $rutaCarpeta = __DIR__ . '/../../uploads/';
+        $ruta = $rutaCarpeta . $nombre;
+
+        if (!is_dir($rutaCarpeta)) {
+            mkdir($rutaCarpeta, 0777, true);
         }
 
         move_uploaded_file($imagen['tmp_name'], $ruta);

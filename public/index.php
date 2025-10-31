@@ -56,7 +56,7 @@ $productos = $stmt->fetchAll();
         <h5 class="card-title"><?=htmlspecialchars($p['nombre'])?></h5>
         <p class="card-text small"><?=htmlspecialchars(substr($p['descripcion'],0,80))?></p>
         <p class="fw-bold">S/ <?=number_format($p['precio'],2)?></p>
-        <a href="'product.php'?id=<?=$p['id']?>" class="btn btn-dark">Ver producto</a>
+        <a href="product.php?id=<?=$p['id']?>" class="btn btn-dark">Ver producto</a>
       </div>
     </div>
   </div>

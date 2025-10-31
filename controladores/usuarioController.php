@@ -9,22 +9,18 @@ class UsuarioController {
     }
 
     public function handleRequest() {
-        // 🟢 Crear usuario
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create'])) {
             $this->crearUsuario($_POST);
         }
 
-        // 🟡 Actualizar usuario
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
             $this->actualizarUsuario($_POST);
         }
 
-        // 🔴 Eliminar usuario
         if (isset($_GET['del'])) {
             $this->eliminarUsuario((int)$_GET['del']);
         }
-
-        // 🧾 Retornar lista actualizada
+        
         return $this->dao->obtenerTodos();
     }
 

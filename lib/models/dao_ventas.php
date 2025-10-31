@@ -6,7 +6,6 @@ class VentaDAO {
         $this->pdo = $pdo;
     }
 
-    // Obtener todas las ventas con nombre de cliente
     public function getAll() {
         $sql = "SELECT v.id, v.id_usuario, v.total, v.fecha, u.nombre AS cliente
                 FROM ventas v
@@ -15,7 +14,6 @@ class VentaDAO {
         return $this->pdo->query($sql)->fetchAll();
     }
 
-    // Obtener venta por ID con sus detalles
     public function getById($id) {
         $stmt = $this->pdo->prepare("SELECT * FROM ventas WHERE id=?");
         $stmt->execute([$id]);
@@ -53,7 +51,6 @@ class VentaDAO {
         }
     }
 
-    // Eliminar venta
     public function delete($id) {
         $stmt = $this->pdo->prepare("DELETE FROM ventas WHERE id=?");
         return $stmt->execute([$id]);
