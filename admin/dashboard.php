@@ -30,7 +30,7 @@ $mejoresClientes = $pdo->query("
   <a class="btn btn-primary" href="products.php">Gestionar productos</a>
   <a class="btn btn-outline-secondary" href="clients.php">Clientes</a>
   <a class="btn btn-outline-secondary" href="sales.php">Ventas</a>
-  <a class="btn btn-success" href="report_csv.php">Exportar CSV</a>
+  <a class="btn btn-success" href="report_csv.php">Exportar Excel</a>
 </div>
 <div class="row g-3">
   <div class="col-md-3"><div class="card p-3"><h5>Productos</h5><div class="display-6"><?=$totProd?></div></div></div>

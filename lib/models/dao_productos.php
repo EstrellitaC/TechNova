@@ -66,7 +66,7 @@ class ProductoDAO {
         $ext = pathinfo($imagen['name'], PATHINFO_EXTENSION);
         $nombre = uniqid('prod_') . '.' . $ext;
 
-        // ✅ Guardar directamente en la carpeta raíz del proyecto
+        // Guardar directamente en la carpeta raíz del proyecto
         $rutaCarpeta = __DIR__ . '/../../uploads/';
         $ruta = $rutaCarpeta . $nombre;
 
